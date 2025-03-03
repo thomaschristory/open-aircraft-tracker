@@ -15,6 +15,9 @@ from open_aircraft_tracker.api.mock import MockAPI
 from open_aircraft_tracker.api.opensky import OpenSkyAPI
 from open_aircraft_tracker.api.airlabs import AirLabsAPI
 from open_aircraft_tracker.api.aviationstack import AviationStackAPI
+from open_aircraft_tracker.api.flightaware import FlightAwareAPI
+from open_aircraft_tracker.api.flightradar24 import FlightRadar24API
+from open_aircraft_tracker.api.adsbexchange import ADSBexchangeAPI
 from open_aircraft_tracker.display.radar import RadarDisplay
 from open_aircraft_tracker.utils.sound import SoundAlert
 
@@ -72,6 +75,21 @@ class AircraftTracker:
             if not api_username:
                 raise ValueError("AviationStack API key is required")
             self.api = AviationStackAPI(api_key=api_username)
+        elif api_type.lower() == "flightaware":
+            # For FlightAware, we need both username and API key
+            if not api_username or not api_password:
+                raise ValueError("FlightAware API requires both username and API key")
+            self.api = FlightAwareAPI(username=api_username, api_key=api_password)
+        elif api_type.lower() == "flightradar24":
+            # For FlightRadar24, we use the API key from the username parameter
+            if not api_username:
+                raise ValueError("FlightRadar24 API key is required")
+            self.api = FlightRadar24API(api_key=api_username)
+        elif api_type.lower() == "adsbexchange":
+            # For ADSBexchange, we use the API key from the username parameter
+            if not api_username:
+                raise ValueError("ADSBexchange API key is required")
+            self.api = ADSBexchangeAPI(api_key=api_username)
         elif api_type.lower() == "mock":
             self.api = MockAPI(num_aircraft=mock_aircraft_count)
         else:

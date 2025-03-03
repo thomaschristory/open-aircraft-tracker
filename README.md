@@ -10,7 +10,10 @@ A terminal-based application for tracking aircraft near your location in real-ti
 - Interactive radar display with aircraft positions
 - Sound alerts when new aircraft enter the tracking radius
 - Highlight specific aircraft by callsign
-- Support for multiple aircraft tracking APIs (OpenSky Network, AirLabs, AviationStack, and a mock API for testing)
+- Support for multiple aircraft tracking APIs:
+  - Free APIs: OpenSky Network, AirLabs, AviationStack
+  - Premium APIs: FlightAware, FlightRadar24, ADSBexchange
+  - Mock API for testing
 - Both interactive (radar display) and non-interactive (console output) modes
 - Easily extensible to support additional aircraft tracking APIs
 
@@ -66,7 +69,7 @@ Usage: aircraft-tracker [OPTIONS]
 │ *  --longitude            -lon      FLOAT    Center longitude in decimal degrees [default: None] [required]                                                                                                   │
 │    --radius               -r        FLOAT    Radius in kilometers [default: 5.0]                                                                                                                              │
 │    --update-interval      -u        FLOAT    Update interval in seconds [default: 5.0]                                                                                                                        │
-│    --api                  -a        TEXT     API to use (opensky, airlabs, aviationstack, mock) [default: opensky]                                                                                            │
+│    --api                  -a        TEXT     API to use (opensky, airlabs, aviationstack, flightaware, flightradar24, adsbexchange, mock) [default: opensky]                                                  │
 │    --username                       TEXT     API username (if required) [default: None]                                                                                                                       │
 │    --password                       TEXT     API password (if required) [default: None]                                                                                                                       │
 │    --callsign             -c        TEXT     Callsign to highlight (can be specified multiple times) [default: None]                                                                                          │
@@ -160,15 +163,33 @@ The application also includes a mock API for testing purposes. This API generate
 aircraft-tracker --latitude 47.4582 --longitude 8.5555 --api mock --mock-aircraft-count 30
 ```
 
-### Future API Integrations
+### Premium API Integrations
 
-We plan to add support for the following premium aircraft tracking APIs in the future:
+The application now supports the following premium aircraft tracking APIs:
 
 1. **FlightAware (FlightXML)** - One of the most comprehensive flight tracking services with extensive global coverage and detailed flight information.
+
+```bash
+aircraft-tracker --latitude 47.4582 --longitude 8.5555 --api flightaware --username your_username --password your_api_key
+```
+
 2. **FlightRadar24** - Very popular flight tracking service with real-time tracking of thousands of aircraft around the world.
+
+```bash
+aircraft-tracker --latitude 47.4582 --longitude 8.5555 --api flightradar24 --username your_api_key
+```
+
 3. **ADSBexchange** - Provides unfiltered flight data with no censorship, including military and sensitive flights that might be filtered on other platforms.
 
-These premium APIs require paid subscriptions but offer higher quality data, better reliability, and more features than the free alternatives.
+```bash
+aircraft-tracker --latitude 47.4582 --longitude 8.5555 --api adsbexchange --username your_api_key
+```
+
+These premium APIs require paid subscriptions but offer higher quality data, better reliability, and more features than the free alternatives. For pricing information, visit the respective websites:
+
+- FlightAware: https://flightaware.com/commercial/flightxml/
+- FlightRadar24: https://www.flightradar24.com/premium/
+- ADSBexchange: https://www.adsbexchange.com/data/
 
 ### Adding Support for Additional APIs
 
@@ -235,5 +256,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [OpenSky Network](https://opensky-network.org/) for providing the free aircraft tracking API
 - [AirLabs](https://airlabs.co/) for providing the flight tracking API
 - [AviationStack](https://aviationstack.com/) for providing the aviation data API
+- [FlightAware](https://flightaware.com/) for providing the FlightXML API
+- [FlightRadar24](https://www.flightradar24.com/) for providing flight tracking data
+- [ADSBexchange](https://www.adsbexchange.com/) for providing unfiltered flight data
 - [blessed](https://github.com/jquast/blessed) for the terminal interface
 - [geopy](https://github.com/geopy/geopy) for distance calculations

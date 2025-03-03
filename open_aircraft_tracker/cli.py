@@ -37,7 +37,7 @@ def main(
     ),
     api: str = typer.Option(
         "opensky", "--api", "-a", 
-        help="API to use (opensky, airlabs, aviationstack, mock)", 
+        help="API to use (opensky, airlabs, aviationstack, flightaware, flightradar24, adsbexchange, mock)", 
         show_choices=True, case_sensitive=False
     ),
     username: Optional[str] = typer.Option(
@@ -66,7 +66,7 @@ def main(
     when new aircraft enter your specified radius.
     """
     # Validate API type
-    if api.lower() not in ["opensky", "airlabs", "aviationstack", "mock"]:
+    if api.lower() not in ["opensky", "airlabs", "aviationstack", "flightaware", "flightradar24", "adsbexchange", "mock"]:
         console.print(f"[bold red]Error:[/] Unknown API type: {api}")
         raise typer.Exit(code=1)
     
@@ -77,6 +77,18 @@ def main(
     
     if api.lower() == "aviationstack" and not username:
         console.print("[bold red]Error:[/] AviationStack API requires an API key (use --username to provide it)")
+        raise typer.Exit(code=1)
+    
+    if api.lower() == "flightaware" and (not username or not password):
+        console.print("[bold red]Error:[/] FlightAware API requires both username and API key (use --username and --password)")
+        raise typer.Exit(code=1)
+    
+    if api.lower() == "flightradar24" and not username:
+        console.print("[bold red]Error:[/] FlightRadar24 API requires an API key (use --username to provide it)")
+        raise typer.Exit(code=1)
+    
+    if api.lower() == "adsbexchange" and not username:
+        console.print("[bold red]Error:[/] ADSBexchange API requires an API key (use --username to provide it)")
         raise typer.Exit(code=1)
     
     # Create aircraft tracker
