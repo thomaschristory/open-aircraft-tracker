@@ -7,6 +7,7 @@ readme = "README.md"
 repository = "https://github.com/thomaschristory/open-aircraft-tracker"
 license = "MIT"
 packages = [{include = "open_aircraft_tracker"}]
+include = ["bin/aircraft-tracker"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Environment :: Console",
@@ -21,12 +22,13 @@ classifiers = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.10"
 requests = "^2.32.3"
 geopy = "^2.4.1"
 blessed = "^1.20.0"
 python-dotenv = "^1.0.1"
 aiohttp = "^3.9.3"
+typer = {extras = ["all"], version = "^0.9.0"}
 
 [tool.poetry.group.dev.dependencies]
 simpleaudio = "^1.0.4"
@@ -37,7 +39,7 @@ isort = "^6.0.1"
 mypy = "^1.15.0"
 
 [tool.poetry.scripts]
-aircraft-tracker = "open_aircraft_tracker.cli:main"
+aircraft-tracker = "open_aircraft_tracker.aircraft_tracker:main"
 
 [tool.black]
 line-length = 88

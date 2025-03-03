@@ -56,38 +56,33 @@ python -m open_aircraft_tracker.main --latitude 47.3769 --longitude 8.5417 --rad
 ### Command-line Options
 
 ```
-usage: aircraft-tracker [-h] --latitude LATITUDE --longitude LONGITUDE [--radius RADIUS]
-                        [--update-interval UPDATE_INTERVAL] [--api {opensky,mock}]
-                        [--username USERNAME] [--password PASSWORD] [--callsign CALLSIGN]
-                        [--sound-file SOUND_FILE] [--mock-aircraft-count MOCK_AIRCRAFT_COUNT]
-                        [--non-interactive]
+Usage: aircraft-tracker [OPTIONS]
 
-Open Aircraft Tracker - Track aircraft near your location
+ Track aircraft near your location with a terminal-based radar display.
+ The application displays a radar-like view of nearby aircraft and can alert you when new aircraft enter your specified radius.
 
-required arguments:
-  --latitude LATITUDE, -lat LATITUDE
-                        Center latitude in decimal degrees
-  --longitude LONGITUDE, -lon LONGITUDE
-                        Center longitude in decimal degrees
-
-optional arguments:
-  --radius RADIUS, -r RADIUS
-                        Radius in kilometers (default: 5.0)
-  --update-interval UPDATE_INTERVAL, -u UPDATE_INTERVAL
-                        Update interval in seconds (default: 5.0)
-  --api {opensky,mock}, -a {opensky,mock}
-                        API to use (default: opensky)
-  --username USERNAME   API username (if required)
-  --password PASSWORD   API password (if required)
-  --callsign CALLSIGN, -c CALLSIGN
-                        Callsign to highlight (can be specified multiple times)
-  --sound-file SOUND_FILE, -s SOUND_FILE
-                        Path to a WAV file to use for alerts
-  --mock-aircraft-count MOCK_AIRCRAFT_COUNT, -m MOCK_AIRCRAFT_COUNT
-                        Number of simulated aircraft for mock API (default: 20)
-  --non-interactive, -n
-                        Run in non-interactive mode (no radar display)
+╭─ Options ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ *  --latitude             -lat      FLOAT    Center latitude in decimal degrees [default: None] [required]                                                                                                    │
+│ *  --longitude            -lon      FLOAT    Center longitude in decimal degrees [default: None] [required]                                                                                                   │
+│    --radius               -r        FLOAT    Radius in kilometers [default: 5.0]                                                                                                                              │
+│    --update-interval      -u        FLOAT    Update interval in seconds [default: 5.0]                                                                                                                        │
+│    --api                  -a        TEXT     API to use [default: opensky]                                                                                                                                    │
+│    --username                       TEXT     API username (if required) [default: None]                                                                                                                       │
+│    --password                       TEXT     API password (if required) [default: None]                                                                                                                       │
+│    --callsign             -c        TEXT     Callsign to highlight (can be specified multiple times) [default: None]                                                                                          │
+│    --sound-file           -s        TEXT     Path to a WAV file to use for alerts [default: None]                                                                                                             │
+│    --mock-aircraft-count  -m        INTEGER  Number of simulated aircraft for mock API [default: 20]                                                                                                          │
+│    --non-interactive      -n                 Run in non-interactive mode (no radar display)                                                                                                                   │
+│    --install-completion                      Install completion for the current shell.                                                                                                                        │
+│    --show-completion                         Show completion for the current shell to copy it or customize the installation.                                                                                 │
+│    --help                                    Show this message and exit.                                                                                                                                      │
+╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 ```
+
+Note: The CLI is now powered by [Typer](https://typer.tiangolo.com/), which provides a more modern and user-friendly interface with features like:
+- Rich formatting for help text
+- Automatic shell completion
+- Better error messages and validation
 
 ### Examples
 
