@@ -160,6 +160,16 @@ The application also includes a mock API for testing purposes. This API generate
 aircraft-tracker --latitude 47.4582 --longitude 8.5555 --api mock --mock-aircraft-count 30
 ```
 
+### Future API Integrations
+
+We plan to add support for the following premium aircraft tracking APIs in the future:
+
+1. **FlightAware (FlightXML)** - One of the most comprehensive flight tracking services with extensive global coverage and detailed flight information.
+2. **FlightRadar24** - Very popular flight tracking service with real-time tracking of thousands of aircraft around the world.
+3. **ADSBexchange** - Provides unfiltered flight data with no censorship, including military and sensitive flights that might be filtered on other platforms.
+
+These premium APIs require paid subscriptions but offer higher quality data, better reliability, and more features than the free alternatives.
+
 ### Adding Support for Additional APIs
 
 The application is designed to be easily extensible with additional aircraft tracking APIs. To add support for a new API:
