@@ -9,6 +9,7 @@ import typer
 from rich.console import Console
 
 from open_aircraft_tracker.main import AircraftTracker
+from open_aircraft_tracker.utils.logging import LogLevel, setup_logging
 
 # Create a Typer app instance
 app = typer.Typer(
@@ -58,6 +59,12 @@ def main(
     non_interactive: bool = typer.Option(
         False, "--non-interactive", "-n", help="Run in non-interactive mode (no radar display)"
     ),
+    log_level: LogLevel = typer.Option(
+        LogLevel.INFO, "--log-level", "-l", help="Log level (DEBUG, INFO, WARNING, ERROR)"
+    ),
+    log_file: Optional[str] = typer.Option(
+        None, "--log-file", "-f", help="Path to log file (if not specified, log to console only)"
+    ),
 ):
     """
     Track aircraft near your location with a terminal-based radar display.
@@ -90,6 +97,11 @@ def main(
     if api.lower() == "adsbexchange" and not username:
         console.print("[bold red]Error:[/] ADSBexchange API requires an API key (use --username to provide it)")
         raise typer.Exit(code=1)
+    
+    # Set up logging
+    logger = setup_logging(log_level=log_level, log_file=log_file)
+    logger.info(f"Starting Open Aircraft Tracker with API: {api}")
+    logger.debug(f"Parameters: latitude={latitude}, longitude={longitude}, radius={radius}, update_interval={update_interval}")
     
     # Create aircraft tracker
     tracker = AircraftTracker(

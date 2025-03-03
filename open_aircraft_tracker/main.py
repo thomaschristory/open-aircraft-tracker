@@ -20,6 +20,7 @@ from open_aircraft_tracker.api.flightradar24 import FlightRadar24API
 from open_aircraft_tracker.api.adsbexchange import ADSBexchangeAPI
 from open_aircraft_tracker.display.radar import RadarDisplay
 from open_aircraft_tracker.utils.sound import SoundAlert
+from open_aircraft_tracker.utils.logging import logger
 
 
 class AircraftTracker:
@@ -119,20 +120,29 @@ class AircraftTracker:
     async def update_aircraft(self):
         """Update aircraft positions from the API."""
         try:
+            logger.debug(f"Fetching aircraft within {self.radius_km} km of {self.latitude}, {self.longitude}")
+            
             # Get aircraft within radius
             aircraft_list = await self.api.get_aircraft_in_radius(
                 self.latitude, self.longitude, self.radius_km
             )
+            
+            logger.info(f"Found {len(aircraft_list)} aircraft within {self.radius_km} km radius")
+            logger.debug(f"Aircraft list: {[a.callsign.strip() if a.callsign else a.icao24 for a in aircraft_list]}")
             
             # Update known aircraft
             current_aircraft_set = set()
             for aircraft in aircraft_list:
                 current_aircraft_set.add(aircraft.icao24)
                 self.known_aircraft[aircraft.icao24] = aircraft
+                logger.debug(f"Aircraft details - ICAO: {aircraft.icao24}, Callsign: {aircraft.callsign}, "
+                            f"Position: {aircraft.latitude}, {aircraft.longitude}, Altitude: {aircraft.altitude}")
             
             # Check for new aircraft
             new_aircraft = current_aircraft_set - self.last_aircraft_set
             if new_aircraft:
+                logger.info(f"Detected {len(new_aircraft)} new aircraft: {list(new_aircraft)}")
+                
                 # Play sound alert for new aircraft
                 self.sound_alert.play()
                 
@@ -153,6 +163,11 @@ class AircraftTracker:
                             print(f"Speed: {aircraft.velocity * 3.6:.1f} km/h")
                         print()
             
+            # Check for aircraft that have left the radius
+            left_aircraft = self.last_aircraft_set - current_aircraft_set
+            if left_aircraft:
+                logger.info(f"{len(left_aircraft)} aircraft left the radius: {list(left_aircraft)}")
+            
             # Update radar display if in interactive mode
             if self.interactive and self.radar:
                 self.radar.set_aircraft_list(aircraft_list)
@@ -162,6 +177,7 @@ class AircraftTracker:
             self.last_aircraft_set = current_aircraft_set
             
         except Exception as e:
+            logger.error(f"Error updating aircraft: {e}", exc_info=True)
             if self.interactive:
                 # Clear screen and display error
                 print(self.term.clear())
@@ -173,8 +189,16 @@ class AircraftTracker:
         """Run the aircraft tracker."""
         self.running = True
         
+        logger.info(f"Starting aircraft tracker in {'interactive' if self.interactive else 'non-interactive'} mode")
+        logger.info(f"Using API: {self.api.__class__.__name__}")
+        logger.info(f"Tracking aircraft within {self.radius_km} km of {self.latitude}, {self.longitude}")
+        logger.info(f"Update interval: {self.update_interval} seconds")
+        if self.callsigns:
+            logger.info(f"Highlighting callsigns: {', '.join(self.callsigns)}")
+        
         # Set up signal handlers
         def handle_signal(sig, frame):
+            logger.info("Received signal to terminate")
             self.running = False
             if self.interactive:
                 # Restore terminal
@@ -193,6 +217,7 @@ class AircraftTracker:
         
         try:
             # Main loop
+            logger.info("Starting main loop")
             while self.running:
                 # Update aircraft
                 await self.update_aircraft()
@@ -205,18 +230,25 @@ class AircraftTracker:
                         
                         # Quit on 'q'
                         if key.lower() == "q":
+                            logger.info("User requested to quit (pressed 'q')")
                             self.running = False
                             break
                         
                         # Toggle info panel on 'i'
                         elif key.lower() == "i" and self.radar:
+                            logger.debug("Toggling info panel (pressed 'i')")
                             self.radar.toggle_info_panel()
                             self.radar.draw()
                 else:
                     # Wait for update interval in non-interactive mode
                     await asyncio.sleep(self.update_interval)
         
+        except Exception as e:
+            logger.error(f"Unexpected error in main loop: {e}", exc_info=True)
+            raise
+        
         finally:
+            logger.info("Shutting down aircraft tracker")
             # Restore terminal
             if self.interactive:
                 print(self.term.normal_cursor())

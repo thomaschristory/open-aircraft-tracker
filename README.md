@@ -15,6 +15,11 @@ A terminal-based application for tracking aircraft near your location in real-ti
   - Premium APIs: FlightAware, FlightRadar24, ADSBexchange
   - Mock API for testing
 - Both interactive (radar display) and non-interactive (console output) modes
+- Extensive logging options for debugging and monitoring:
+  - Multiple log levels (DEBUG, INFO, WARNING, ERROR)
+  - Console and file logging
+  - Detailed API response logging
+  - Real-time monitoring with `tail -f`
 - Easily extensible to support additional aircraft tracking APIs
 
 ## Installation
@@ -76,6 +81,8 @@ Usage: aircraft-tracker [OPTIONS]
 │    --sound-file           -s        TEXT     Path to a WAV file to use for alerts [default: None]                                                                                                             │
 │    --mock-aircraft-count  -m        INTEGER  Number of simulated aircraft for mock API [default: 20]                                                                                                          │
 │    --non-interactive      -n                 Run in non-interactive mode (no radar display)                                                                                                                   │
+│    --log-level            -l        TEXT     Log level (DEBUG, INFO, WARNING, ERROR) [default: INFO]                                                                                                          │
+│    --log-file             -f        TEXT     Path to log file (if not specified, log to console only) [default: None]                                                                                         │
 │    --install-completion                      Install completion for the current shell.                                                                                                                        │
 │    --show-completion                         Show completion for the current shell to copy it or customize the installation.                                                                                 │
 │    --help                                    Show this message and exit.                                                                                                                                      │
@@ -112,6 +119,20 @@ aircraft-tracker --latitude 47.4582 --longitude 8.5555 --api mock
 ```bash
 aircraft-tracker --latitude 47.4582 --longitude 8.5555 --non-interactive
 ```
+
+#### Enable detailed logging to a file
+
+```bash
+aircraft-tracker --latitude 47.4582 --longitude 8.5555 --log-level DEBUG --log-file /path/to/aircraft.log
+```
+
+You can then monitor the log file in real-time using:
+
+```bash
+tail -f /path/to/aircraft.log
+```
+
+This is especially useful for debugging when nothing appears to be happening, as it shows all API responses and aircraft tracking details.
 
 ### Interactive Mode Controls
 
