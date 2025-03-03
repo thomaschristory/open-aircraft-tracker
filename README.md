@@ -10,7 +10,7 @@ A terminal-based application for tracking aircraft near your location in real-ti
 - Interactive radar display with aircraft positions
 - Sound alerts when new aircraft enter the tracking radius
 - Highlight specific aircraft by callsign
-- Support for multiple aircraft tracking APIs (OpenSky Network, AirLabs, and a mock API for testing)
+- Support for multiple aircraft tracking APIs (OpenSky Network, AirLabs, AviationStack, and a mock API for testing)
 - Both interactive (radar display) and non-interactive (console output) modes
 - Easily extensible to support additional aircraft tracking APIs
 
@@ -66,7 +66,7 @@ Usage: aircraft-tracker [OPTIONS]
 │ *  --longitude            -lon      FLOAT    Center longitude in decimal degrees [default: None] [required]                                                                                                   │
 │    --radius               -r        FLOAT    Radius in kilometers [default: 5.0]                                                                                                                              │
 │    --update-interval      -u        FLOAT    Update interval in seconds [default: 5.0]                                                                                                                        │
-│    --api                  -a        TEXT     API to use (opensky, airlabs, mock) [default: opensky]                                                                                                           │
+│    --api                  -a        TEXT     API to use (opensky, airlabs, aviationstack, mock) [default: opensky]                                                                                            │
 │    --username                       TEXT     API username (if required) [default: None]                                                                                                                       │
 │    --password                       TEXT     API password (if required) [default: None]                                                                                                                       │
 │    --callsign             -c        TEXT     Callsign to highlight (can be specified multiple times) [default: None]                                                                                          │
@@ -140,7 +140,17 @@ AirLabs provides a comprehensive flight tracking API with real-time data. You ne
 aircraft-tracker --latitude 47.4582 --longitude 8.5555 --api airlabs --username your_api_key
 ```
 
-Note: For AirLabs, the API key should be provided using the `--username` parameter.
+Note: For AirLabs, the API key should be provided using the `--username` parameter. AirLabs is currently closed for new registrations.
+
+### AviationStack API
+
+AviationStack provides real-time global aviation data including flights, airlines, and airports. You need to sign up for an API key at [AviationStack](https://aviationstack.com/) to use this API. The free tier allows up to 500 requests per month.
+
+```bash
+aircraft-tracker --latitude 47.4582 --longitude 8.5555 --api aviationstack --username your_api_key
+```
+
+Note: For AviationStack, the API key should be provided using the `--username` parameter. AviationStack still accepts new registrations (as of March 2025).
 
 ### Mock API
 
@@ -214,5 +224,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - [OpenSky Network](https://opensky-network.org/) for providing the free aircraft tracking API
 - [AirLabs](https://airlabs.co/) for providing the flight tracking API
+- [AviationStack](https://aviationstack.com/) for providing the aviation data API
 - [blessed](https://github.com/jquast/blessed) for the terminal interface
 - [geopy](https://github.com/geopy/geopy) for distance calculations
