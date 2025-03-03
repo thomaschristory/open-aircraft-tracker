@@ -163,11 +163,19 @@ class RadarDisplay:
                 y = self.center_y + int(radius * math.sin(angle_rad))
                 
                 if 0 <= x < self.term.width and 0 <= y < self.term.height:
-                    print(self.term.move_xy(x, y) + self.term.color(self.RING_CHAR))
+                    try:
+                        print(self.term.move_xy(x, y) + self.term.color_rgb(200, 200, 200)(self.RING_CHAR))
+                    except Exception:
+                        # Fallback if color_rgb is not supported
+                        print(self.term.move_xy(x, y) + self.RING_CHAR)
         
         # Draw center point
-        print(self.term.move_xy(self.center_x, self.center_y) + 
-              self.term.color(self.CENTER_CHAR, self.INFO_COLOR))
+        try:
+            print(self.term.move_xy(self.center_x, self.center_y) + 
+                  self.term.color_rgb(0, 255, 255)(self.CENTER_CHAR))
+        except Exception:
+            # Fallback if color_rgb is not supported
+            print(self.term.move_xy(self.center_x, self.center_y) + self.CENTER_CHAR)
         
         # Draw cardinal directions
         directions = [
@@ -182,8 +190,12 @@ class RadarDisplay:
             y = self.center_y + int(self.radar_radius * dy * 1.1)
             
             if 0 <= x < self.term.width and 0 <= y < self.term.height:
-                print(self.term.move_xy(x, y) + 
-                      self.term.color(direction, self.INFO_COLOR))
+                try:
+                    print(self.term.move_xy(x, y) + 
+                          self.term.color_rgb(0, 255, 255)(direction))
+                except Exception:
+                    # Fallback if color_rgb is not supported
+                    print(self.term.move_xy(x, y) + direction)
         
         # Draw range rings labels
         for i in range(1, 4):
@@ -197,8 +209,12 @@ class RadarDisplay:
             y = self.center_y + int(radius * math.sin(angle_rad))
             
             if 0 <= x < self.term.width and 0 <= y < self.term.height:
-                print(self.term.move_xy(x, y) + 
-                      self.term.color(label, self.INFO_COLOR))
+                try:
+                    print(self.term.move_xy(x, y) + 
+                          self.term.color_rgb(0, 255, 255)(label))
+                except Exception:
+                    # Fallback if color_rgb is not supported
+                    print(self.term.move_xy(x, y) + label)
     
     def _draw_aircraft(self):
         """Draw aircraft on the radar."""
@@ -218,8 +234,17 @@ class RadarDisplay:
             color = self.HIGHLIGHT_COLOR if self._is_highlighted(aircraft) else self.NORMAL_COLOR
             
             # Draw aircraft symbol
-            print(self.term.move_xy(x, y) + 
-                  self.term.color(self.AIRCRAFT_CHAR, color))
+            try:
+                # Use different colors for highlighted and normal aircraft
+                if self._is_highlighted(aircraft):
+                    print(self.term.move_xy(x, y) + 
+                          self.term.color_rgb(255, 255, 0)(self.AIRCRAFT_CHAR))  # Yellow for highlighted
+                else:
+                    print(self.term.move_xy(x, y) + 
+                          self.term.color_rgb(255, 255, 255)(self.AIRCRAFT_CHAR))  # White for normal
+            except Exception:
+                # Fallback if color_rgb is not supported
+                print(self.term.move_xy(x, y) + self.AIRCRAFT_CHAR)
             
             # Draw callsign if available and info display is enabled
             if self.show_info and aircraft.callsign:
@@ -228,8 +253,17 @@ class RadarDisplay:
                 
                 # Ensure callsign is within screen bounds
                 if 0 <= callsign_x < self.term.width - len(aircraft.callsign) and 0 <= callsign_y < self.term.height:
-                    print(self.term.move_xy(callsign_x, callsign_y) + 
-                          self.term.color(aircraft.callsign.strip(), color))
+                    try:
+                        # Use different colors for highlighted and normal aircraft
+                        if self._is_highlighted(aircraft):
+                            print(self.term.move_xy(callsign_x, callsign_y) + 
+                                  self.term.color_rgb(255, 255, 0)(aircraft.callsign.strip()))  # Yellow for highlighted
+                        else:
+                            print(self.term.move_xy(callsign_x, callsign_y) + 
+                                  self.term.color_rgb(255, 255, 255)(aircraft.callsign.strip()))  # White for normal
+                    except Exception:
+                        # Fallback if color_rgb is not supported
+                        print(self.term.move_xy(callsign_x, callsign_y) + aircraft.callsign.strip())
     
     def _draw_info_panel(self):
         """Draw information panel with aircraft details."""
@@ -244,19 +278,31 @@ class RadarDisplay:
         
         # Draw panel title
         title = " Aircraft Information "
-        print(self.term.move_xy(panel_x + (panel_width - len(title)) // 2, panel_y) + 
-              self.term.color(title, self.INFO_COLOR))
+        try:
+            print(self.term.move_xy(panel_x + (panel_width - len(title)) // 2, panel_y) + 
+                  self.term.color_rgb(0, 255, 255)(title))
+        except Exception:
+            # Fallback if color_rgb is not supported
+            print(self.term.move_xy(panel_x + (panel_width - len(title)) // 2, panel_y) + title)
         
         # Draw column headers
         headers = ["Callsign", "Alt(m)", "Hdg", "Spd(km/h)"]
         header_line = " ".join(f"{h:<10}" for h in headers)
-        print(self.term.move_xy(panel_x + 1, panel_y + 2) + 
-              self.term.color(header_line, self.INFO_COLOR))
+        try:
+            print(self.term.move_xy(panel_x + 1, panel_y + 2) + 
+                  self.term.color_rgb(0, 255, 255)(header_line))
+        except Exception:
+            # Fallback if color_rgb is not supported
+            print(self.term.move_xy(panel_x + 1, panel_y + 2) + header_line)
         
         # Draw separator
         separator = "-" * (panel_width - 2)
-        print(self.term.move_xy(panel_x + 1, panel_y + 3) + 
-              self.term.color(separator, self.INFO_COLOR))
+        try:
+            print(self.term.move_xy(panel_x + 1, panel_y + 3) + 
+                  self.term.color_rgb(0, 255, 255)(separator))
+        except Exception:
+            # Fallback if color_rgb is not supported
+            print(self.term.move_xy(panel_x + 1, panel_y + 3) + separator)
         
         # Sort aircraft by distance from center
         sorted_aircraft = sorted(
@@ -286,8 +332,17 @@ class RadarDisplay:
             row_data = [callsign, altitude, heading, speed]
             row_text = " ".join(f"{d:<10}" for d in row_data)
             
-            print(self.term.move_xy(panel_x + 1, row_y) + 
-                  self.term.color(row_text, color))
+            try:
+                # Use different colors for highlighted and normal aircraft
+                if self._is_highlighted(aircraft):
+                    print(self.term.move_xy(panel_x + 1, row_y) + 
+                          self.term.color_rgb(255, 255, 0)(row_text))  # Yellow for highlighted
+                else:
+                    print(self.term.move_xy(panel_x + 1, row_y) + 
+                          self.term.color_rgb(255, 255, 255)(row_text))  # White for normal
+            except Exception:
+                # Fallback if color_rgb is not supported
+                print(self.term.move_xy(panel_x + 1, row_y) + row_text)
     
     def _draw_status_bar(self):
         """Draw status bar with general information."""
@@ -313,16 +368,24 @@ class RadarDisplay:
         status_text = " | ".join(status_elements)
         
         # Draw status bar
-        print(self.term.move_xy(0, status_y) + 
-              self.term.color(status_text, self.INFO_COLOR))
+        try:
+            print(self.term.move_xy(0, status_y) + 
+                  self.term.color_rgb(0, 255, 255)(status_text))
+        except Exception:
+            # Fallback if color_rgb is not supported
+            print(self.term.move_xy(0, status_y) + status_text)
     
     def _draw_help_text(self):
         """Draw help text at the bottom of the screen."""
         help_y = self.term.height - 2
         help_text = "Press 'q' to quit, 'i' to toggle info panel, 'h' to toggle help"
         
-        print(self.term.move_xy(0, help_y) + 
-              self.term.color(help_text, self.INFO_COLOR))
+        try:
+            print(self.term.move_xy(0, help_y) + 
+                  self.term.color_rgb(0, 255, 255)(help_text))
+        except Exception:
+            # Fallback if color_rgb is not supported
+            print(self.term.move_xy(0, help_y) + help_text)
     
     def draw(self):
         """Draw the complete radar display."""
