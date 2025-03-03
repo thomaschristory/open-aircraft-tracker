@@ -36,7 +36,8 @@ def main(
         5.0, "--update-interval", "-u", help="Update interval in seconds"
     ),
     api: str = typer.Option(
-        "opensky", "--api", "-a", help="API to use", 
+        "opensky", "--api", "-a", 
+        help="API to use (opensky, airlabs, mock)", 
         show_choices=True, case_sensitive=False
     ),
     username: Optional[str] = typer.Option(
@@ -65,8 +66,13 @@ def main(
     when new aircraft enter your specified radius.
     """
     # Validate API type
-    if api.lower() not in ["opensky", "mock"]:
+    if api.lower() not in ["opensky", "airlabs", "mock"]:
         console.print(f"[bold red]Error:[/] Unknown API type: {api}")
+        raise typer.Exit(code=1)
+    
+    # Validate API-specific requirements
+    if api.lower() == "airlabs" and not username:
+        console.print("[bold red]Error:[/] AirLabs API requires an API key (use --username to provide it)")
         raise typer.Exit(code=1)
     
     # Create aircraft tracker

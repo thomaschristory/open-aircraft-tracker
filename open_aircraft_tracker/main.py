@@ -13,6 +13,7 @@ from blessed import Terminal
 from open_aircraft_tracker.api.base import Aircraft, AircraftTrackerAPI
 from open_aircraft_tracker.api.mock import MockAPI
 from open_aircraft_tracker.api.opensky import OpenSkyAPI
+from open_aircraft_tracker.api.airlabs import AirLabsAPI
 from open_aircraft_tracker.display.radar import RadarDisplay
 from open_aircraft_tracker.utils.sound import SoundAlert
 
@@ -60,6 +61,11 @@ class AircraftTracker:
         # Initialize API client
         if api_type.lower() == "opensky":
             self.api = OpenSkyAPI(username=api_username, password=api_password)
+        elif api_type.lower() == "airlabs":
+            # For AirLabs, we use the API key from the username parameter
+            if not api_username:
+                raise ValueError("AirLabs API key is required")
+            self.api = AirLabsAPI(api_key=api_username)
         elif api_type.lower() == "mock":
             self.api = MockAPI(num_aircraft=mock_aircraft_count)
         else:
